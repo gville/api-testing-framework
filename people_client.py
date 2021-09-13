@@ -1,4 +1,6 @@
+import json
 import requests
+import uuid
 
 class PeopleClient:
 
@@ -18,4 +20,20 @@ class PeopleClient:
                 'Accept': 'application/json'
                 }
         response = requests.post(self.base_url, data=payload, headers=headers)
+        return response
+
+    def generate_payload_and_unique_lname(self, dictionary=None):
+        if dictionary is None:
+            unique_lname = f'User {str(uuid.uuid4())}'
+            payload = json.dumps({
+                'fname': 'QATA',
+                'lname': unique_lname
+            })
+        else:
+            unique_lname = dictionary['lname']
+            payload = json.dumps(dictionary)
+        return payload, unique_lname
+
+    def delete_person(self, person_id):
+        response = requests.delete(f'{self.base_url}/{person_id}')
         return response
