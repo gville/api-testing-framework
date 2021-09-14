@@ -14,7 +14,7 @@ class TestPeopleApi:
         assert_that(fname).contains('Kent')
 
     def test_new_person_can_be_added(self):
-        payload, unique_lname = self.client.generate_payload_and_unique_lname()
+        payload, unique_lname = self.client.generate_new_person_data()
         response = self.client.create_person(payload)
         assert_that(response.status_code).is_equal_to(204)
 
@@ -23,11 +23,7 @@ class TestPeopleApi:
         assert_that(lname).contains(unique_lname)
 
     def test_existent_person_can_not_be_added(self):
-        dictionary = {
-            'fname': 'Kent',
-            'lname': 'Brockman'
-        }
-        payload, _ = self.client.generate_payload_and_unique_lname(dictionary)
+        payload = self.client.generate_existent_person_data()
         response = self.client.create_person(payload)
         assert_that(response.status_code).is_equal_to(409)
 
@@ -39,7 +35,7 @@ class TestPeopleApi:
         assert_that(person.get('lname')).is_equal_to('Farrell')
     
     def test_created_person_can_be_deleted(self):
-        payload, unique_lname = self.client.generate_payload_and_unique_lname()
+        payload, unique_lname = self.client.generate_new_person_data()
         response = self.client.create_person(payload)
         assert_that(response.status_code).is_equal_to(204)
 

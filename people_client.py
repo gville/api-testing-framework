@@ -22,7 +22,19 @@ class PeopleClient:
         response = requests.post(self.base_url, data=payload, headers=headers)
         return response
 
-    def generate_payload_and_unique_lname(self, dictionary=None):
+    def generate_new_person_data(self):
+        payload, unique_lname = self.__generate_payload_and_unique_lname()
+        return payload, unique_lname
+
+    def generate_existent_person_data(self):
+        existent_person = {
+            'fname': 'Kent',
+            'lname': 'Brockman'
+        }
+        payload, _ = self.__generate_payload_and_unique_lname(existent_person)
+        return payload
+
+    def __generate_payload_and_unique_lname(self, dictionary=None):
         if dictionary is None:
             unique_lname = f'User {str(uuid.uuid4())}'
             payload = json.dumps({
