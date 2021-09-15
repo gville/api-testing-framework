@@ -23,7 +23,10 @@ class TestPeopleApi:
         assert_that(lname).contains(unique_lname)
 
     def test_existent_person_can_not_be_added(self):
-        payload = self.client.generate_existent_person_data()
+        payload, _ = self.client.generate_new_person_data()
+        response = self.client.create_person(payload)
+        assert_that(response.status_code).is_equal_to(204)
+
         response = self.client.create_person(payload)
         assert_that(response.status_code).is_equal_to(409)
 

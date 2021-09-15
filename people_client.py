@@ -26,24 +26,12 @@ class PeopleClient:
         payload, unique_lname = self.__generate_payload_and_unique_lname()
         return payload, unique_lname
 
-    def generate_existent_person_data(self):
-        existent_person = {
-            'fname': 'Kent',
-            'lname': 'Brockman'
-        }
-        payload, _ = self.__generate_payload_and_unique_lname(existent_person)
-        return payload
-
-    def __generate_payload_and_unique_lname(self, dictionary=None):
-        if dictionary is None:
-            unique_lname = f'User {str(uuid.uuid4())}'
-            person = open("tests/data/person.json", "r")
-            person_dictionary = json.load(person)
-            person_dictionary['lname'] = unique_lname
-            payload = json.dumps(person_dictionary)
-        else:
-            unique_lname = dictionary['lname']
-            payload = json.dumps(dictionary)
+    def __generate_payload_and_unique_lname(self):
+        unique_lname = f'User {str(uuid.uuid4())}'
+        person = open("tests/data/person.json", "r")
+        person_dictionary = json.load(person)
+        person_dictionary['lname'] = unique_lname
+        payload = json.dumps(person_dictionary)
         return payload, unique_lname
 
     def delete_person(self, person_id):
