@@ -37,10 +37,10 @@ class PeopleClient:
     def __generate_payload_and_unique_lname(self, dictionary=None):
         if dictionary is None:
             unique_lname = f'User {str(uuid.uuid4())}'
-            payload = json.dumps({
-                'fname': 'QATA',
-                'lname': unique_lname
-            })
+            person = open("tests/data/person.json", "r")
+            person_dictionary = json.load(person)
+            person_dictionary['lname'] = unique_lname
+            payload = json.dumps(person_dictionary)
         else:
             unique_lname = dictionary['lname']
             payload = json.dumps(dictionary)
