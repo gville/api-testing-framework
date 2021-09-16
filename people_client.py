@@ -2,6 +2,8 @@ import json
 import requests
 import uuid
 
+from utils.data_reader import read_file
+
 class PeopleClient:
 
     def __init__(self, url):
@@ -28,7 +30,7 @@ class PeopleClient:
 
     def __generate_payload_and_unique_lname(self):
         unique_lname = f'User {str(uuid.uuid4())}'
-        person = open("tests/data/person.json", "r")
+        person = read_file('person.json')
         person_dictionary = json.load(person)
         person_dictionary['lname'] = unique_lname
         payload = json.dumps(person_dictionary)

@@ -1,3 +1,4 @@
+from models.person import Person
 from people_client import PeopleClient
 from assertpy import assert_that
 from config import BASE_URL
@@ -10,8 +11,7 @@ class TestPeopleApi:
     def test_get_people_has_kent(self):
         response = self.client.get_people()
         assert_that(response.status_code).is_equal_to(200)
-        fname = [person['fname'] for person in response.json()]
-        assert_that(fname).contains('Kent')
+        assert_that(response.json()).extracting('fname').contains('Kent')
 
     def test_new_person_can_be_added(self):
         payload, unique_lname = self.client.generate_new_person_data()
@@ -33,9 +33,9 @@ class TestPeopleApi:
     def test_get_person_by_id(self):
         response = self.client.get_person(1)
         assert_that(response.status_code).is_equal_to(200)
-        person = response.json()
-        assert_that(person.get('fname')).is_equal_to('Doug')
-        assert_that(person.get('lname')).is_equal_to('Farrell')
+        person = Person(**response.json())
+        assert_that(person.fname).is_equal_to('Doug')
+        assert_that(person.lname).is_equal_to('Farrell')
     
     def test_created_person_can_be_deleted(self):
         payload, unique_lname = self.client.generate_new_person_data()
