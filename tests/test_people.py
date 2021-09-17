@@ -1,7 +1,11 @@
+from assertpy.assertpy import soft_assertions
 from models.person import Person
 from people_client import PeopleClient
 from assertpy import assert_that
 from config import BASE_URL
+from cerberus import Validator
+from utils import data_reader
+
 
 class TestPeopleApi:
 
@@ -47,3 +51,19 @@ class TestPeopleApi:
         
         response = self.client.delete_person(new_person['person_id'])
         assert_that(response.status_code).is_equal_to(200)
+
+    def test_person_schema(self):
+        schema = data_reader.read_json_from_file("person_schema.json")
+        response = self.client.get_person(1)
+        validator = Validator(schema, required_all=True)
+        is_valid = validator.validate(response.json())
+        assert_that(is_valid, description=validator.errors).is_true()
+
+    def test_people_schema(self):
+        schema = data_reader.read_json_from_file("person_schema.json")
+        response = self.client.get_people()
+        validator = Validator(schema, required_all=True)
+        with soft_assertions():
+            for person in response.json():
+                is_valid = validator.validate(person)
+                assert_that(is_valid, description=validator.errors).is_true()

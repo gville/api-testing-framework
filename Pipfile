@@ -8,6 +8,7 @@ requests = "==2.26.0"
 pytest = "==6.2.4"
 assertpy = "==1.1"
 pydantic = "*"
+cerberus = "*"
 
 [dev-packages]
 
