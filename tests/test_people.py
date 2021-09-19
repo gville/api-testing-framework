@@ -52,6 +52,19 @@ class TestPeopleApi:
         response = self.client.delete_person(new_person['person_id'])
         assert_that(response.status_code).is_equal_to(200)
 
+    def test_created_person_can_be_updated(self):
+        payload, unique_lname = self.client.generate_new_person_data()
+        response = self.client.create_person(payload)
+        assert_that(response.status_code).is_equal_to(204)
+
+        people = self.client.get_people().json()
+        new_person = [person for person in people if person['lname'] == unique_lname][0]
+        
+        updated_payload, _ = self.client.generate_new_person_data()
+        
+        response = self.client.update_person(new_person['person_id'], updated_payload)
+        assert_that(response.status_code).is_equal_to(200)
+
     def test_person_schema(self):
         schema = data_reader.read_json_from_file("person_schema.json")
         response = self.client.get_person(1)

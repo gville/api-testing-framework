@@ -36,6 +36,13 @@ class PeopleClient:
         payload = json.dumps(person_dictionary)
         return payload, unique_lname
 
+    def update_person(self, person_id, payload):
+        headers = {'Content-type': 'application/json',
+                'Accept': 'application/json'
+                }
+        response = requests.put(f'{self.base_url}/{person_id}', data=payload, headers=headers)
+        return response
+
     def delete_person(self, person_id):
         response = requests.delete(f'{self.base_url}/{person_id}')
         return response
