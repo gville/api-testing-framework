@@ -2,7 +2,7 @@ import json
 import requests
 import uuid
 
-from utils.data_reader import read_file
+from utils import data_reader
 
 class PeopleClient:
 
@@ -25,16 +25,16 @@ class PeopleClient:
         return response
 
     def generate_new_person_data(self):
-        payload, unique_lname = self.__generate_payload_and_unique_lname()
-        return payload, unique_lname
+        payload, fname, lname = self.__generate_payload_and_names()
+        return payload, fname, lname
 
-    def __generate_payload_and_unique_lname(self):
+    def __generate_payload_and_names(self):
+        person_json = data_reader.read_file('person.json')
+        person_dict = json.load(person_json)
         unique_lname = f'User {str(uuid.uuid4())}'
-        person = read_file('person.json')
-        person_dictionary = json.load(person)
-        person_dictionary['lname'] = unique_lname
-        payload = json.dumps(person_dictionary)
-        return payload, unique_lname
+        person_dict['lname'] = unique_lname
+        payload = json.dumps(person_dict)
+        return payload, person_dict['fname'], unique_lname
 
     def update_person(self, person_id, payload):
         headers = {'Content-type': 'application/json',
