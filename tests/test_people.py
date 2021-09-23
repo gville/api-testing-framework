@@ -13,10 +13,11 @@ class TestPeopleApi:
     def setup_class(self):
         self.client = PeopleClient(url=BASE_URL)
 
-    def test_get_people_has_kent(self):
+    def test_get_people_has_specific_person(self):
+        specific_person = 'Kent'
         response = self.client.get_people()
         assert_that(response.status_code).is_equal_to(200)
-        assert_that(response.json()).extracting('fname').contains('Kent')
+        assert_that(response.json()).extracting('fname').contains(specific_person)
 
     def test_new_person_can_be_added(self):
         payload, _, unique_lname = self.client.generate_new_person_data()
@@ -24,8 +25,7 @@ class TestPeopleApi:
         assert_that(response.status_code).is_equal_to(204)
 
         people = self.client.get_people().json()
-        lname = [person['lname'] for person in people]
-        assert_that(lname).contains(unique_lname)
+        assert_that(people).extracting('lname').contains(unique_lname)
 
     def test_existent_person_can_not_be_added(self):
         payload, fname, lname = self.client.generate_new_person_data()
@@ -40,13 +40,14 @@ class TestPeopleApi:
         assert_that(error.detail).is_equal_to(error_msg)
 
     def test_get_person_by_id(self):
-        response = self.client.get_person(1)
+        person_id = 1
+        response = self.client.get_person(person_id)
         
         assert_that(response.status_code).is_equal_to(200)
         person = Person(**response.json())
         assert_that(person.fname).is_equal_to('Doug')
         assert_that(person.lname).is_equal_to('Farrell')
-        assert_that(person.person_id).is_equal_to(1)
+        assert_that(person.person_id).is_equal_to(person_id)
     
     def test_created_person_can_be_deleted(self):
         payload, _, lname = self.client.generate_new_person_data()
